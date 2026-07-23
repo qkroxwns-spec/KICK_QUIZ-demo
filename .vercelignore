@@ -1,0 +1,7 @@
+# Vercel ignores — old monorepo dirs + local dev
+backend
+frontend
+node_modules
+server
+agents
+*.md
