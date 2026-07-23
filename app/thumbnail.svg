@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1932" height="828" viewBox="0 0 1932 828">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#e3f0f8"/>
+      <stop offset="50%" stop-color="#b8d8f0"/>
+      <stop offset="100%" stop-color="#3182f6"/>
+    </linearGradient>
+    <linearGradient id="badge" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#2563eb"/>
+      <stop offset="100%" stop-color="#3182f6"/>
+    </linearGradient>
+  </defs>
+
+  <!-- 배경 -->
+  <rect width="1932" height="828" fill="url(#sky)"/>
+
+  <!-- 앱 아이콘 배지 (좌측) -->
+  <rect x="200" y="160" width="340" height="340" rx="72" fill="url(#badge)"/>
+
+  <!-- 축구공 외곽 -->
+  <circle cx="370" cy="330" r="120" fill="white" opacity="0.95"/>
+
+  <!-- 축구공 패널 라인 -->
+  <g stroke="#3182f6" stroke-width="3.5" fill="none" opacity="0.5">
+    <polygon points="370,288 415,315 400,360 340,360 325,315"/>
+    <polygon points="370,288 290,240 255,273"/>
+    <polygon points="370,288 450,240 485,273"/>
+    <polygon points="415,315 505,297 495,340"/>
+    <polygon points="400,360 510,395 485,435"/>
+    <polygon points="340,360 230,395 255,435"/>
+    <polygon points="325,315 235,297 245,340"/>
+    <polygon points="340,360 325,450 370,456 400,360"/>
+    <polygon points="370,456 415,450 415,315"/>
+  </g>
+
+  <!-- 물음표 -->
+  <text x="370" y="355" text-anchor="middle" font-family="Arial Black, sans-serif" font-weight="900" font-size="70" fill="#3182f6">?</text>
+
+  <!-- 영문 브랜드명 (우측) -->
+  <text x="630" y="295" text-anchor="start" font-family="'Noto Sans KR', 'Apple SD Gothic Neo', 'Helvetica Neue', sans-serif" font-weight="800" font-size="72" fill="white" letter-spacing="2">KICK_QUIZ</text>
+
+  <!-- 한글 브랜드명 -->
+  <text x="630" y="360" text-anchor="start" font-family="'Noto Sans KR', 'Apple SD Gothic Neo', sans-serif" font-weight="700" font-size="42" fill="white" opacity="0.85">킥퀴즈</text>
+
+  <!-- 태그라인 -->
+  <text x="630" y="420" text-anchor="start" font-family="'Noto Sans KR', 'Apple SD Gothic Neo', sans-serif" font-weight="400" font-size="28" fill="white" opacity="0.6">매일 축구 O/X 퀴즈 — 덕후력을 테스트하세요</text>
+</svg>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>KICK_QUIZ — 매치 관리</title>
+<style>
+:root{--blue:#3182f6;--bg:#0f1117;--card:#1a1d27;--border:#2a2d3a;--text:#e1e4ea;--sub:#8b95a1;--green:#00c853;--red:#f04452}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text);padding:20px 24px;max-width:700px;margin:0 auto}
+h1{font-size:22px;margin-bottom:6px}h1 span{color:var(--blue)}
+.sub{font-size:12px;color:var(--sub);margin-bottom:20px}
+.card{background:var(--card);border-radius:12px;padding:20px;margin-bottom:16px;border:1px solid var(--border)}
+h2{font-size:16px;margin-bottom:14px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px 12px}
+label{font-size:11px;color:var(--sub);display:block;margin-bottom:3px}
+input,select{width:100%;padding:8px 10px;border-radius:6px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:13px}
+.btn{padding:10px 20px;border-radius:8px;border:none;cursor:pointer;font-size:13px;font-weight:700;background:var(--blue);color:white}
+.btn:active{opacity:0.85}.btn-red{background:var(--red)}.btn-sm{padding:6px 12px;font-size:11px}
+.match-table{width:100%;border-collapse:collapse;font-size:13px}
+.match-table th{padding:10px 8px;text-align:left;color:var(--sub);font-size:11px;border-bottom:1px solid var(--border)}
+.match-table td{padding:10px 8px;border-bottom:1px solid var(--border);vertical-align:middle}
+.team-color{display:inline-block;width:12px;height:12px;border-radius:50%;vertical-align:middle;margin-right:4px}
+.actions{display:flex;gap:4px;justify-content:center}
+.footer{margin-top:20px;font-size:11px;color:var(--sub);text-align:center}
+.predictions{font-size:11px;color:var(--sub);margin-top:8px}
+</style>
+</head>
+<body>
+<h1>⚽<span>KICK</span> QUIZ</h1>
+<div class="sub">매치 관리 — 앱 응원탭에 표시될 경기 데이터<br>← <a href="/app/index.html" style="color:var(--blue)">앱으로 돌아가기</a></div>
+
+<div class="card">
+<h2>➕ 새 매치 추가</h2>
+<div class="form-grid">
+<div><label>팀1 이름</label><input id="t1" placeholder="맨시티"></div>
+<div><label>팀1 색상</label><input id="c1" placeholder="#6cabdd" value="#6cabdd"></div>
+<div><label>팀2 이름</label><input id="t2" placeholder="아스널"></div>
+<div><label>팀2 색상</label><input id="c2" placeholder="#ef0107" value="#ef0107"></div>
+<div><label>스코어 (종료시)</label><input id="sc" placeholder="2-1"></div>
+<div><label>상태</label><select id="st"><option value="예정">예정</option><option value="경기중">경기중</option><option value="종료">종료</option></select></div>
+<div><label>경기일</label><input id="dt" placeholder="03-22"></div>
+</div>
+<button class="btn" onclick="addMatch()" style="margin-top:14px">➕ 추가</button>
+</div>
+
+<div class="card">
+<h2>📋 현재 매치 (앱에 표시됨)</h2>
+<div style="overflow-x:auto"><table class="match-table"><thead><tr>
+<th>순서</th><th>팀1</th><th>vs</th><th>팀2</th><th>스코어</th><th>상태</th><th>날짜</th><th>관리</th>
+</tr></thead><tbody id="matchBody"></tbody></table></div>
+</div>
+
+<div class="card">
+<h2>📦 데이터</h2>
+<div style="display:flex;gap:8px;flex-wrap:wrap">
+<button class="btn btn-sm" onclick="resetToDefault()">🔄 기본값 초기화</button>
+<button class="btn btn-sm btn-red" onclick="clearAll()">🗑️ 전체 삭제</button>
+<button class="btn btn-sm" onclick="exportJSON()">📥 내보내기</button>
+</div>
+<div class="predictions" id="statusInfo"></div>
+</div>
+
+<div class="footer">
+데이터는 브라우저 localStorage에 저장됩니다 (kq_matches).<br>
+앱이 없으면 기본 매치 5개가 표시됩니다.
+</div>
+
+<script>
+var MATCH_KEY='kq_matches';
+var DEFAULTS=[{t1:'맨시티',c1:'#6cabdd',t2:'아스널',c2:'#ef0107',score:'2-1',st:'종료',dt:'03-15'},{t1:'리버풀',c1:'#c8102e',t2:'맨유',c2:'#da291c',score:'3-0',st:'종료',dt:'03-16'},{t1:'토트넘',c1:'#132257',t2:'첼시',c2:'#034694',score:'-',st:'예정',dt:'03-22'},{t1:'레알',c1:'#febe10',t2:'바르사',c2:'#a50044',score:'-',st:'예정',dt:'03-23'},{t1:'뮌헨',c1:'#dc052d',t2:'도르트문트',c2:'#fde100',score:'-',st:'예정',dt:'03-29'}];
+
+function load(){try{var r=localStorage.getItem(MATCH_KEY);return r?JSON.parse(r):[]}catch(e){return[]}}
+function save(d){try{localStorage.setItem(MATCH_KEY,JSON.stringify(d))}catch(e){}render()}
+
+function render(){
+  var d=load(),b=document.getElementById('matchBody');
+  if(!d.length){b.innerHTML='<tr><td colspan="8" style="text-align:center;color:var(--sub);padding:20px">등록된 매치 없음 — 기본 5개가 앱에 표시됩니다</td></tr>';return}
+  b.innerHTML=d.map(function(m,i){
+    return '<tr><td>'+(i+1)+'</td>'
+      +'<td><span class="team-color" style="background:'+m.c1+'"></span>'+m.t1+'</td>'
+      +'<td>vs</td>'
+      +'<td><span class="team-color" style="background:'+m.c2+'"></span>'+m.t2+'</td>'
+      +'<td>'+(m.score||'-')+'</td><td>'+m.st+'</td><td>'+m.dt+'</td>'
+      +'<td class="actions"><button class="btn btn-sm" onclick="editMatch('+i+')">✏️</button><button class="btn btn-sm btn-red" onclick="delMatch('+i+')">🗑️</button></td></tr>';
+  }).join('');
+  document.getElementById('statusInfo').textContent='총 '+d.length+'개 매치 / 앱이 읽는 localStorage 키: '+MATCH_KEY;
+}
+render();
+
+function addMatch(){
+  var t1=document.getElementById('t1').value.trim();
+  var t2=document.getElementById('t2').value.trim();
+  if(!t1||!t2){alert('팀 이름 입력');return}
+  var m={t1:t1,c1:document.getElementById('c1').value||'#666',t2:t2,c2:document.getElementById('c2').value||'#666',score:document.getElementById('sc').value||'-',st:document.getElementById('st').value,dt:document.getElementById('dt').value||'--'};
+  var d=load();d.push(m);save(d);
+  document.getElementById('t1').value='';document.getElementById('t2').value='';document.getElementById('sc').value='';document.getElementById('dt').value='';
+}
+function delMatch(i){var d=load();if(i>=0&&i<d.length){d.splice(i,1);save(d)}}
+function editMatch(i){
+  var d=load();if(i<0||i>=d.length)return;
+  var m=d[i];
+  document.getElementById('t1').value=m.t1;document.getElementById('c1').value=m.c1;
+  document.getElementById('t2').value=m.t2;document.getElementById('c2').value=m.c2;
+  document.getElementById('sc').value=m.score;document.getElementById('st').value=m.st;
+  document.getElementById('dt').value=m.dt;
+  if(confirm(i+'번 매치를 위 값으로 교체?')){
+    d.splice(i,1,{t1:m.t1,c1:document.getElementById('c1').value,t2:document.getElementById('t2').value,c2:document.getElementById('c2').value,score:document.getElementById('sc').value||'-',st:document.getElementById('st').value,dt:document.getElementById('dt').value||'--'});
+    save(d);
+  }
+}
+function resetToDefault(){if(confirm('기본 매치 5개로 초기화?')){save(JSON.parse(JSON.stringify(DEFAULTS)))}}
+function clearAll(){if(confirm('전체 매치 삭제?')){localStorage.removeItem(MATCH_KEY);render()}}
+function exportJSON(){var d=JSON.stringify(load(),null,2);var b=new Blob([d],{type:'application/json'});var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='kq_matches_backup.json';a.click()}
+</script>
+</body>
+</html>

@@ -1,0 +1,19 @@
+{
+  "rewrites": [
+    { "source": "/", "destination": "/app/index.html" },
+    { "source": "/app", "destination": "/app/index.html" },
+    { "source": "/app/", "destination": "/app/index.html" },
+    { "source": "/admin", "destination": "/app/admin.html" },
+    { "source": "/dashboard", "destination": "/dashboard.html" },
+    { "source": "/presentation", "destination": "/docs/presentation.html" },
+    { "source": "/api/state", "destination": "/ops/state.json" }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-cache" }
+      ]
+    }
+  ]
+}

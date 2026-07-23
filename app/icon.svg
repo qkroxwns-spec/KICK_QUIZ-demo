@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#e3f0f8"/>
+      <stop offset="50%" stop-color="#b8d8f0"/>
+      <stop offset="100%" stop-color="#3182f6"/>
+    </linearGradient>
+    <linearGradient id="badge" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#2563eb"/>
+      <stop offset="100%" stop-color="#3182f6"/>
+    </linearGradient>
+  </defs>
+
+  <!-- 배경 -->
+  <rect width="512" height="512" rx="0" fill="url(#sky)"/>
+
+  <!-- 앱 아이콘 배지 -->
+  <rect x="126" y="60" width="260" height="260" rx="56" fill="url(#badge)"/>
+
+  <!-- 축구공 외곽 -->
+  <circle cx="256" cy="190" r="95" fill="white" opacity="0.95"/>
+
+  <!-- 축구공 패널 라인 -->
+  <g stroke="#3182f6" stroke-width="3" fill="none" opacity="0.5">
+    <!-- 중앙 오각형 -->
+    <polygon points="256,155 290,175 278,210 234,210 222,175"/>
+    <!-- 상단 삼각형 -->
+    <polygon points="256,155 196,120 167,145"/>
+    <polygon points="256,155 316,120 345,145"/>
+    <!-- 측면 조각들 -->
+    <polygon points="290,175 370,160 360,195"/>
+    <polygon points="278,210 372,240 345,270"/>
+    <polygon points="234,210 140,240 167,270"/>
+    <polygon points="222,175 142,160 152,195"/>
+    <!-- 하단 조각 -->
+    <polygon points="234,210 230,290 256,300 278,210"/>
+    <polygon points="256,300 282,290 290,175"/>
+  </g>
+
+  <!-- 물음표 (중앙 오각형 내) -->
+  <text x="256" y="206" text-anchor="middle" font-family="Arial Black, sans-serif" font-weight="900" font-size="52" fill="#3182f6">?</text>
+
+  <!-- 영문 브랜드명 -->
+  <text x="256" y="405" text-anchor="middle" font-family="'Noto Sans KR', 'Apple SD Gothic Neo', 'Helvetica Neue', sans-serif" font-weight="800" font-size="44" fill="white" letter-spacing="0">KICK_QUIZ</text>
+
+  <!-- 한글 브랜드명 -->
+  <text x="256" y="448" text-anchor="middle" font-family="'Noto Sans KR', 'Apple SD Gothic Neo', sans-serif" font-weight="700" font-size="26" fill="white" opacity="0.85">킥퀴즈</text>
+</svg>

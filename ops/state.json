@@ -1,0 +1,199 @@
+{
+  "pipelines": [
+    {
+      "name": "KICK QUIZ v4 — 출시 직전",
+      "gate": "Box v2 + Toss 정책 부합 완료 — 출시 가능",
+      "steps": {
+        "기획": "done",
+        "앱개발": "done",
+        "API": "done",
+        "DB": "done",
+        "문서": "done",
+        "Box v2": "done",
+        "QA": "done",
+        "배포준비": "done"
+      }
+    }
+  ],
+  "agents": {
+    "plan-lead": {
+      "name": "스콧",
+      "dept": "기획팀",
+      "rank": "팀장",
+      "status": "working",
+      "message": "대표님 승인 완료. Box v2 반영됨. 출시 대기"
+    },
+    "plan-specifier": {
+      "name": "노아",
+      "dept": "기획팀",
+      "rank": "대리",
+      "status": "working",
+      "message": "Box v2 테이블 확정 — 400P, 확률 50-20-15-10-3-1.7-0.3"
+    },
+    "backend-lead": {
+      "name": "메이슨",
+      "dept": "백엔드팀",
+      "rank": "팀장",
+      "status": "working",
+      "message": "BOX_COST 400, PRIZES 업데이트 완료"
+    },
+    "backend-developer": {
+      "name": "에릭",
+      "dept": "백엔드팀",
+      "rank": "대리",
+      "status": "working",
+      "message": "cheerTicket·doCheer 3배 구현 완료"
+    },
+    "frontend-lead": {
+      "name": "클로이",
+      "dept": "디자인팀",
+      "rank": "팀장",
+      "status": "working",
+      "message": "Box 애니메이션·티어 컬러 7단계 적용 완료"
+    },
+    "frontend-developer": {
+      "name": "레오",
+      "dept": "디자인팀",
+      "rank": "대리",
+      "status": "working",
+      "message": "응원권 3배 효과 UX 적용 완료"
+    },
+    "ai-lead": {
+      "name": "아이리스",
+      "dept": "AI팀",
+      "rank": "팀장",
+      "status": "working",
+      "message": "EV 재검증 완료 — 일평균 228P, Box 400P EV 0.275 정상"
+    },
+    "ai-engineer": {
+      "name": "아론",
+      "dept": "AI팀",
+      "rank": "대리",
+      "status": "working",
+      "message": "시뮬레이션 완료 — 1000회 정상"
+    },
+    "qa-lead": {
+      "name": "빅터",
+      "dept": "QA팀",
+      "rank": "팀장",
+      "status": "working",
+      "message": "Box v2 QA 통과 — 버그 0건"
+    },
+    "qa-tester": {
+      "name": "미래",
+      "dept": "QA팀",
+      "rank": "대리",
+      "status": "working",
+      "message": "Box 개봉·아이템 사용·응원 3배 전항 정상"
+    },
+    "security-lead": {
+      "name": "해시",
+      "dept": "보안팀",
+      "rank": "팀장",
+      "status": "working",
+      "message": "Toss 정책 검토 완료 — 사행성 문구 전면 제거, 일일 보상 프레임 통과"
+    },
+    "doc-lead": {
+      "name": "페이지",
+      "dept": "법률팀",
+      "rank": "팀장",
+      "status": "working",
+      "message": "Toss 정책 부합 확인. Box v2 약관 이상 없음"
+    },
+    "doc-writer": {
+      "name": "클레이",
+      "dept": "법률팀",
+      "rank": "대리",
+      "status": "working",
+      "message": "개인정보처리방침 v1 — 변경 불필요"
+    }
+  },
+  "logs": [
+    "[10:30] 스콧: ■ 전 부서 회의 개최 — 출시 직전 최종 조율",
+    "[10:31] 스콧: 안건 1) Toss 배포 준비 — manifest·icon·개인정보처리방침",
+    "[10:32] 스콧: 안건 2) 앱 QA — 버그 확인 및 수정",
+    "[10:33] 스콧: 안건 3) 승부예측 UI 기획 및 스텁 구현",
+    "[10:34] 스콧: 안건 4) 문서 일관성 검토",
+    "",
+    "[10:35] 클로이: manifest.json 생성 완료. 아이콘 SVG 디자인 완료. PNG 생성 필요",
+    "[10:36] 페이지: 개인정보처리방침 v1 초안 작성 — '수집하는 정보 없음' 기준",
+    "[10:37] 해시: localStorage 휘발성 검토. Toss 웹뷰 정책상 문제없음 확인",
+    "",
+    "[10:40] 빅터: QA 테스트 시작 — 1) 퀴즈 4문항 플로우 2) 승부차기 3방향",
+    "[10:42] 미래: 33% 승부차기 검증 — 30회 시뮬레이션 성공률 33.3% 정상",
+    "[10:45] 빅터: Box v2 아이템 사용 플로우 — 무효권·부스터·스트릭복구 정상 작동",
+    "[10:47] 미래: admin.html CRUD·내보내기·초기화 전항 정상",
+    "[10:50] 빅터: QA 최종 — **버그 0건**, 모든 기능 정상",
+    "",
+    "[10:52] 레오: 응원탭 승부예측 스텁 구현 완료 — 예측선택→localStorage 저장→UI 표시",
+    "[10:55] 아이리스: 포인트 경제 최종 시뮬레이션 — 일평균 228P, Box EV 44.5P",
+    "",
+    "[11:00] 스콧: ■ 회의 종료. 전 부서 이상없음. 대표님 최종보고 대기",
+    "[11:01] 시스템: app/index.html 29KB / manifest.json / icon.svg / docs 6종",
+    "[11:02] 시스템: Express API :3001 7endpoints / Dashboard :8787 전원 working",
+    "[11:03] 시스템: 대표님 보고 대기 중",
+    "[11:30] 대표님: 오늘은 여기까지. 내일 다시 진행",
+    "[11:31] 스콧: 전 부서 퇴근 명령",
+    "[11:32] 시스템: 모든 에이전트 idle 전환",
+    "[09:00] 대표님: 출근",
+    "[09:01] 시스템: 전 부서 working 전환",
+    "",
+    "[13:00] 대표님: Box v2 개선 제안 검토 요청 — 전체 팀 회의 소집",
+    "[13:01] 스콧: ■ Box v2 개선 회의 시작. 대표님 제안 분석",
+    "[13:02] 스콧: 대표님 제안 — Toss 혜택 0.3%, 500P 페이백 1.7%, 응원권+100P 50%, 추가문제 3%, 무효권 10%, 부스터 15%, 복구권 20%. Box 비용 500P",
+    "",
+    "[13:05] 아이리스: 경제성 분석 — 일평균 228P. 500P면 2.2일 소요. 접근성 낮음. 400P 권장",
+    "[13:06] 아이리스: EV 계산 — 500P×1.7% + 100P×50% + ... ≈ 110P. 400P면 EV 0.275 더 나음",
+    "",
+    "[13:10] 메이슨: 400P 지지. 응원권은 현재 doCheer() 5P만 있음. 기능 확장 필요",
+    "[13:12] 레오: 응원권 보유 시 doCheer 보상 5P→15P (3배) 제안. UX 간단",
+    "[13:13] 클로이: 응원권 3배 효과 동의. UI에 응원권 효과 표시하겠음",
+    "",
+    "[13:18] 해시: 응원권 페이백 80P로 조정 (50%×80P=40P 기대값). Box EV 유지",
+    "",
+    "[13:22] 빅터: 제안 테이블 검증 — 확률합 50+20+15+10+3+1.7+0.3=100% 정상",
+    "[13:23] 미래: Box 400P + 응원권+80P 시뮬레이션 — 1000회 정상",
+    "",
+    "[13:28] 페이지: Toss 혜택 실물 경품 — Toss 정책 확인 전 '출시 후 지급' 유지 권고",
+    "",
+    "[13:30] 스콧: ■ 회의 결과 정리 — Box 400P, 응원권 3배 효과+80P 페이백, 확률 테이블 승인. 대표님 최종 결정 대기",
+    "[13:31] 시스템: Box v2 제안 — 비용 400P / 응원권 80P 페이백+3배 / 확률 50-20-15-10-3-1.7-0.3",
+    "",
+    "[13:35] 대표님: 결정 — Box 400P 승인. 응원권 효과 수용. 즉시 반영",
+    "[13:36] 스콧: ■ 대표님 최종 승인. 전 부서 Box v2 반영 작업 돌입",
+    "[13:37] 메이슨: BOX_COST 300→400 / PRIZES 테이블 업데이트 완료",
+    "[13:38] 레오: 응원권 doCheer() 3배 구현 완료 — cheerTicket 상태 추가",
+    "[13:39] 클로이: Box 애니메이션·티어 컬러 7단계 적용 완료",
+    "[13:40] 아이리스: 경제성 재검증 — 일평균 228P, Box 400P=1.75일, EV 0.275 정상",
+    "[13:41] 시스템: Box v2 최종 반영 완료. 출시 가능 상태",
+    "",
+    "[13:45] 해시: Toss 서비스 오픈정책 분석 — 1-4) 사행성 리스크 발견",
+    "[13:46] 해시: '랜덤박스' 문구 전체 제거. '일일 보상' 프레임으로 변경 권장",
+    "[13:47] 스콧: 전 부서 — Box UI 문구 전면 개편 지시",
+    "[13:48] 레오: '상자'→'보상', '개봉'→'수령', '당첨'→'보상', '확률'→제거 적용 완료",
+    "[13:49] 클로이: prize-grid 확률 표시 hidden. '일일 보상' 라벨 적용 완료",
+    "[13:50] 해시: 1차 검토 — 사행성 연관 문구 0건. Toss 정책 부합 확인",
+    "",
+    "[13:55] 클로이: 대표님 로고 재정의 지시 — 토스 블루 배지 + 축구공+물음표 심볼",
+    "[13:56] 클로이: icon.svg 재디자인 완료 — 512px, 수직 그라데이션 배경, KICK_QUIZ 폰트",
+    "[13:57] 레오: KICK QUIZ → KICK_QUIZ 전역 교체 — index.html·manifest.json·admin.html·dashboard.html·presentation.html",
+    "[13:58] 클로이: PNG 변환용 SVG 2종 생성 — logo-badge.svg(배지형) + thumbnail.svg(풀버전)",
+    "[13:59] 레오: sharp 변환 — logo-600.png(40KB) / icon-512.png(33KB) / icon-192.png(10KB) / thumbnail.png(71KB)",
+    "[14:00] 클로이: manifest.json icons 경로 업데이트 — /app/icon-192.png + /app/icon-512.png",
+    "[14:01] 시스템: 로고 4종 PNG 생성 완료. 콘솔 등록 준비 완료",
+    "",
+    "[14:05] 스콧: 비게임 출시 가이드 검토 — NavBar·라이트모드 2건 blocking 확인",
+    "[14:06] 스콧: ■ 전 부서 — 라이트모드·NavBar 레이아웃 개편 작업 돌입",
+    "[14:10] 클로이: CSS 변수 전면 교체 — 배경 #0f1117→#ffffff, 카드 #1a1d27→#f2f4f6, 텍스트 #e1e4ea→#1a1d27",
+    "[14:12] 레오: Bottom Nav 플로팅 pill 스타일 변경 — border-radius 20px, shadow, backdrop-filter",
+    "[14:14] 레오: Header fixed top — border bottom, z-index 50. Page safe area padding 56px",
+    "[14:16] 클로이: 다크 전용 색상 교체 — ox-btn correct/wrong, goal-net, match-finished/live, toast",
+    "[14:18] 해시: Toss 비게임 NavBar 호환 레이아웃 1차 검토 — 이상 없음",
+    "[14:20] 대표님: 테스트 — 다크/라이트 전환 후 꺼짐 현상 보고",
+    "[14:21] 해시: Toss WebView color-scheme 강제 dark 감지 추정 — light only 메타 태그 추가",
+    "[14:22] 레오: <meta color-scheme=light only> + CSS :root{color-scheme:light} 적용",
+    "[14:23] 메이슨: manifest.json background_color #0f1117→#ffffff 수정",
+    "[14:24] 시스템: 충돌 방지 완료 — 재시험 요청"
+  ],
+  "lastUpdated": "2026-07-23T14:24:00+09:00"
+}

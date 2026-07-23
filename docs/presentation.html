@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>KICK_QUIZ — 최종 보고</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Noto Sans KR',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f0e6;color:#2d2d2d;overflow:hidden;height:100vh}
+.slide{display:none;width:100vw;height:100vh;padding:60px 80px;position:relative;overflow-y:auto}
+.slide.active{display:flex;flex-direction:column;justify-content:center}
+.slide-num{position:absolute;bottom:20px;right:36px;font-size:13px;color:#bbb}
+.nav{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);display:flex;gap:10px;z-index:10}
+.nav button{padding:7px 18px;border-radius:6px;border:none;cursor:pointer;font-size:12px;font-weight:600;background:#c4a882;color:#fff}
+.nav button:hover{background:#a0845c}.nav button:disabled{opacity:0.3;cursor:default}
+h1{font-size:38px;font-weight:800;margin-bottom:12px}h1 span{color:#2563eb}
+h2{font-size:26px;font-weight:700;margin-bottom:16px;color:#6b5930}
+h3{font-size:17px;font-weight:600;margin-bottom:8px}
+p{font-size:15px;line-height:1.7;margin-bottom:10px;color:#444}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:12px 0}
+.card{background:#fff;border-radius:10px;padding:18px;border:1px solid #e0d6c2}
+.card h3{margin-bottom:6px;color:#6b5930;font-size:14px}.card p{font-size:13px;margin:0;color:#555}
+.badge{display:inline-block;background:#2563eb;color:#fff;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600;margin-right:4px}
+.bg-green{background:#10b981}.bg-orange{background:#f97316}.bg-red{background:#ef4444}.bg-purple{background:#8b5cf6}
+.tag{display:inline-block;padding:1px 6px;border-radius:4px;font-size:10px;font-weight:600;margin-right:3px}
+.tag-done{background:#d1fae5;color:#065f46}.tag-next{background:#fef3c7;color:#92400e}
+.blue{color:#2563eb}.green{color:#10b981}.orange{color:#f97316}
+table{width:100%;border-collapse:collapse;font-size:13px;background:#fff;border-radius:8px;overflow:hidden}
+td,th{padding:8px 12px;border-bottom:1px solid #e0d6c2;text-align:left}
+th{background:#f0ebe3;color:#6b5930;font-weight:600;font-size:12px}
+.status-bar{display:flex;height:8px;border-radius:4px;overflow:hidden;margin:12px 0}
+.status-bar div{height:100%}
+.highlight{background:#e8dcc8;padding:1px 6px;border-radius:3px}
+</style>
+</head>
+<body>
+
+<div class="slide active">
+<div style="text-align:center">
+<div style="font-size:72px;margin-bottom:16px">⚽</div>
+<h1><span>KICK</span> QUIZ</h1>
+<p style="font-size:18px;color:#8B7355;font-weight:600">최종 보고 — 출시 직전</p>
+<p style="font-size:13px;color:#bbb;margin-top:36px">2026.07.22 · 전 부서 회의 결과</p>
+</div>
+<div class="slide-num">1 / 12</div>
+</div>
+
+<div class="slide">
+<h2>📋 프로젝트 현황</h2>
+<div class="status-bar">
+<div style="width:100%;background:#10b981;border-radius:4px"></div>
+</div>
+<p style="font-size:13px;color:#666">MVP 개발률 <strong>100%</strong> — 출시 직전</p>
+<div class="grid">
+<div class="card"><h3>🎯 v4 변경점</h3><p>8문항→4문항, 50%→33%승부차기, Box v2 유틸리티 아이템, K리그 제외, 팬팀, 광고슬롯</p></div>
+<div class="card"><h3>👥 팀</h3><p>6개 부서 14명 에이전트 · 기획+AI 합동 포인트 시뮬레이션 완료</p></div>
+<div class="card"><h3>✅ QA</h3><p>버그 0건 · 4문항·승부차기·Box v2·팬팀·인벤토리 전항 정상</p></div>
+<div class="card"><h3>📦 배포</h3><p>Toss 미니앱 준비 중 · manifest·icon·개인정보처리방침 완료</p></div>
+</div>
+<div class="slide-num">2 / 12</div>
+</div>
+
+<div class="slide">
+<h2>📊 대표님 피드백 반영 결과</h2>
+<table>
+<tr><th>요청</th><th>변경</th><th>상태</th></tr>
+<tr><td>퀴즈 8문항 많음</td><td>4문항 (초급2+고급2)</td><td><span class="tag tag-done">완료</span></td></tr>
+<tr><td>승부차기 확률 개선</td><td>33% 3방향 (좌/중/우)</td><td><span class="tag tag-done">완료</span></td></tr>
+<tr><td>포인트경제 재설계</td><td>초급50P/고급100P/오답20P</td><td><span class="tag tag-done">완료</span></td></tr>
+<tr><td>선물박스 확률</td><td>Box v2 — 유틸리티 5종</td><td><span class="tag tag-done">완료</span></td></tr>
+<tr><td>응원탭 개선</td><td>팬팀 선택 + 예측 스텁</td><td><span class="tag tag-done">완료</span></td></tr>
+<tr><td>K리그 제외</td><td>50문항, K리그 0</td><td><span class="tag tag-done">완료</span></td></tr>
+<tr><td>초대시스템</td><td>Option B 기획 완료 (Toss 정책 확인 후)</td><td><span class="tag tag-next">Post</span></td></tr>
+</table>
+<div class="slide-num">3 / 12</div>
+</div>
+
+<div class="slide">
+<h2>🎁 Box v2 — 최종</h2>
+<table>
+<tr><th>아이템</th><th>확률</th><th>효과</th><th>유저 가치</th></tr>
+<tr><td>🎟️ 응원권</td><td>50%</td><td>+10P</td><td>꽝</td></tr>
+<tr><td>💊 스트릭복구권</td><td>20%</td><td>연속 복구</td><td>⭐ 게임 지속</td></tr>
+<tr><td>⚡ 2X 부스터</td><td>15%</td><td>정답 2배</td><td>⭐ 고득점</td></tr>
+<tr><td>🛡️ 오답무효권</td><td>10%</td><td>오답→정답</td><td>⭐ 리스크 회피</td></tr>
+<tr><td>🔥 추가문제권</td><td>4%</td><td>+1문제</td><td>콘텐츠 확장</td></tr>
+<tr><td>💰 500P 직보</td><td>0.7%</td><td>+500P</td><td>수익</td></tr>
+<tr><td>🎫 Toss 혜택</td><td>0.3%</td><td>출시 후 지급</td><td>Toss 연동</td></tr>
+</table>
+<p style="font-size:12px;color:#888;margin-top:8px">Box EV: 44.5P (300P 소비 대비 유틸리티 가치 별도)</p>
+<div class="slide-num">4 / 12</div>
+</div>
+
+<div class="slide">
+<h2>📱 앱 구조 — 3탭</h2>
+<div class="grid" style="grid-template-columns:1fr 1fr 1fr">
+<div class="card"><h3>🏠 홈</h3>
+<p>4문항 퀴즈 (초급2→광고→고급2)<br>
+🥅 33% 승부차기<br>
+🎒 아이템 인벤토리<br>
+🔥 스트릭 · 정답률</p>
+</div>
+<div class="card"><h3>📅 응원</h3>
+<p>🔵 팬팀 선택<br>
+📊 승부예측 (승/무/패)<br>
+🗓️ 매치 목록 (admin管理)<br>
+⚡ +5P 응원</p>
+</div>
+<div class="card"><h3>🎁 상자</h3>
+<p>300P 소비 · 7등급<br>
+💊 스트릭복구권<br>
+⚡ 2X 부스터<br>
+🛡️ 오답무효권</p>
+</div>
+</div>
+<div class="slide-num">5 / 12</div>
+</div>
+
+<div class="slide">
+<h2>💰 포인트 경제</h2>
+<div class="grid">
+<div class="card"><h3>일 수익</h3>
+<p>퀴즈 평균 190P + 승부차기 33%×80P = <strong>~228P/일</strong><br>
++ 응원 5P = <strong>233P/일</strong></p>
+</div>
+<div class="card"><h3>소비</h3>
+<p>Box 300P/일<br>
+EV 44.5P + 유틸리티 아이템<br>
+월 최대 순수 P: ~6,840P</p>
+</div>
+<div class="card"><h3>레벨</h3>
+<p>입문자(0) → 아마추어(1,000)<br>
+→ 프로(5,000) → 레전드(20,000)</p>
+</div>
+<div class="card"><h3>스트릭 보상</h3>
+<p>7일 +100P · 30일 +500P+프리즈권<br>
+100일 +2,000P+특별배지</p>
+</div>
+</div>
+<div class="slide-num">6 / 12</div>
+</div>
+
+<div class="slide">
+<h2>🖥️ 서버 현황</h2>
+<table>
+<tr><th>서비스</th><th>포트</th><th>상태</th><th>엔드포인트</th></tr>
+<tr><td>Express API</td><td>:3001</td><td><span class="tag tag-done">가동</span></td><td>7개 — today·start·submit·penalty·snackbox·stats·matches</td></tr>
+<tr><td>Dashboard</td><td>:8787</td><td><span class="tag tag-done">가동</span></td><td>대시보드 + 앱 + admin + 문서 정적 서빙</td></tr>
+</table>
+<p style="font-size:12px;color:#888;margin-top:8px">로컬트랙 MVP — 서버리스 대응 가능 (localStorage 전환)</p>
+<div class="slide-num">7 / 12</div>
+</div>
+
+<div class="slide">
+<h2>📂 파일 구조</h2>
+<div style="background:#fff;border-radius:8px;padding:16px;border:1px solid #e0d6c2;font-size:13px;line-height:1.8;color:#555">
+📁 app/<br>
+　📄 index.html — 29KB · 킥퀴즈 앱 (단일파일)<br>
+　📄 admin.html — 6.8KB · 매치 CRUD 관리<br>
+　📄 manifest.json · icon.svg — Toss 배포 준비<br>
+📁 server/<br>
+　📄 express.mjs — 2.1KB · API 7endpoints<br>
+　📄 questionBank.json — 50문항 · K리그 제외<br>
+　📄 dashboard.mjs — 1.8KB · 대시보드<br>
+📁 docs/<br>
+　📄 PRD.md · toss-deployment.md · ad-integration.md<br>
+　📄 feature-roadmap.md · privacy-policy.md · invite-feasibility.md<br>
+📁 ops/<br>
+　📄 state.json — 파이프라인 상태 + 회의록
+</div>
+<div class="slide-num">8 / 12</div>
+</div>
+
+<div class="slide">
+<h2>📦 Toss 배포 준비</h2>
+<div class="grid">
+<div class="card"><h3>✅ 완료</h3>
+<p>manifest.json · icon.svg<br>
+개인정보처리방침<br>
+375×812 레이아웃 확인<br>
+HTTPS 대응 (로컬 제외)</p>
+</div>
+<div class="card"><h3>❌ 필요</h3>
+<p>도메인 확보 및 HTTPS<br>
+아이콘 PNG 생성 (192/512)<br>
+Toss Developer Console 등록<br>
+Toss 웹뷰 실제 테스트</p>
+</div>
+</div>
+<div class="slide-num">9 / 12</div>
+</div>
+
+<div class="slide">
+<h2>🗺️ 출시 후 로드맵</h2>
+<div style="display:flex;gap:0;margin-top:16px">
+<div style="flex:1;padding:14px;background:#2563eb;color:#fff;border-radius:8px 0 0 8px">
+<div style="font-weight:700;font-size:13px">Phase 1</div>
+<div style="font-size:10px;margin-top:4px;opacity:0.9">승부예측<br>2일</div>
+</div>
+<div style="flex:1;padding:14px;background:#f97316;color:#fff">
+<div style="font-weight:700;font-size:13px">Phase 2</div>
+<div style="font-size:10px;margin-top:4px;opacity:0.9">주간챌린지<br>3일</div>
+</div>
+<div style="flex:1;padding:14px;background:#10b981;color:#fff">
+<div style="font-weight:700;font-size:13px">Phase 3</div>
+<div style="font-size:10px;margin-top:4px;opacity:0.9">크롤러<br>2일</div>
+</div>
+<div style="flex:1;padding:14px;background:#8b5cf6;color:#fff;border-radius:0 8px 8px 0">
+<div style="font-weight:700;font-size:13px">Phase 4</div>
+<div style="font-size:10px;margin-top:4px;opacity:0.9">초대시스템<br>Toss 연동</div>
+</div>
+</div>
+<div class="slide-num">10 / 12</div>
+</div>
+
+<div class="slide">
+<h2>✅ 출시 체크리스트</h2>
+<table>
+<tr><th>항목</th><th>상태</th></tr>
+<tr><td>앱 기능 QA — 버그 0</td><td><span class="tag tag-done">완료</span></td></tr>
+<tr><td>포인트 경제 시뮬레이션</td><td><span class="tag tag-done">완료</span></td></tr>
+<tr><td>개인정보처리방침</td><td><span class="tag tag-done">완료</span></td></tr>
+<tr><td>저작권 회피 (구단명 텍스트+컬러)</td><td><span class="tag tag-done">완료</span></td></tr>
+<tr><td>사행성 없음 (0P 참가비 · 결과무관 보상)</td><td><span class="tag tag-done">완료</span></td></tr>
+<tr><td>manifest.json</td><td><span class="tag tag-done">완료</span></td></tr>
+<tr><td>아이콘 (192/512 PNG)</td><td><span class="tag tag-next">필요</span></td></tr>
+<tr><td>Toss Developer Console 등록</td><td><span class="tag tag-next">필요</span></td></tr>
+<tr><td>HTTPS 도메인</td><td><span class="tag tag-next">필요</span></td></tr>
+<tr><td>Toss 웹뷰 테스트</td><td><span class="tag tag-next">필요</span></td></tr>
+</table>
+<div class="slide-num">11 / 12</div>
+</div>
+
+<div class="slide">
+<div style="text-align:center">
+<div style="font-size:64px;margin-bottom:16px">⚽</div>
+<h1><span>KICK</span> QUIZ</h1>
+<p style="font-size:17px;color:#8B7355;margin-top:10px">MVP 개발 완료 · 출시 대기</p>
+<p style="font-size:13px;color:#bbb;margin-top:30px">
+앱: <span class="highlight">http://localhost:8787/app/index.html</span><br>
+Admin: <span class="highlight">/app/admin.html</span><br>
+Dashboard: <span class="highlight">/</span><br>
+API: <span class="highlight">http://localhost:3001</span>
+</p>
+<p style="font-size:12px;color:#bbb;margin-top:16px">전 부서 14명 에이전트 대기 중 · 대표님 명령 대기</p>
+</div>
+<div class="slide-num">12 / 12</div>
+</div>
+
+<div class="nav">
+<button id="prevBtn" onclick="prevSlide()" disabled>← 이전</button>
+<button id="nextBtn" onclick="nextSlide()">다음 →</button>
+</div>
+
+<script>
+var idx=0,slides=document.querySelectorAll('.slide');
+function showSlide(n){
+  slides.forEach(function(s,i){s.className='slide'+(i===n?' active':'');});
+  document.querySelector('.slide-num').textContent=(n+1)+' / '+slides.length;
+  document.getElementById('prevBtn').disabled=n===0;
+  document.getElementById('nextBtn').disabled=n===slides.length-1;
+}
+function nextSlide(){if(idx<slides.length-1){idx++;showSlide(idx);}}
+function prevSlide(){if(idx>0){idx--;showSlide(idx);}}
+document.addEventListener('keydown',function(e){
+  if(e.key==='ArrowRight'||e.key==='ArrowDown'||e.key===' ')nextSlide();
+  if(e.key==='ArrowLeft'||e.key==='ArrowUp')prevSlide();
+});
+</script>
+</body>
+</html>

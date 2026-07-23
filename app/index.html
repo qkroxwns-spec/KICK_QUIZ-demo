@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no,maximum-scale=1.0">
+<meta name="color-scheme" content="light only">
+<meta name="supported-color-schemes" content="light only">
+<title>KICK_QUIZ</title>
+<style>
+:root{color-scheme:light;--blue:#3182f6;--bg:#ffffff;--card:#f2f4f6;--border:#e0e4ea;--text:#1a1d27;--sub:#6b7685;--red:#f04452;--green:#00c853;--gold:#ffd700}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}
+.app{max-width:420px;margin:0 auto;min-height:100vh;position:relative;padding:48px 0 80px;background:var(--bg)}
+.header{position:fixed;top:0;left:50%;transform:translateX(-50%);width:100%;max-width:420px;padding:12px 24px;display:flex;align-items:center;justify-content:space-between;background:var(--bg);z-index:50;border-bottom:1px solid var(--border)}
+.header h1{font-size:18px;font-weight:800;letter-spacing:-0.5px;color:var(--text)}
+.header h1 span{color:var(--blue)}.header-sub{font-size:11px;color:var(--sub)}
+.page{padding:56px 24px 20px;display:none}.page.active{display:block}
+.bottom-nav{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);width:calc(100% - 48px);max-width:380px;display:flex;background:rgba(255,255,255,0.95);border:1px solid var(--border);border-radius:20px;box-shadow:0 2px 16px rgba(0,0,0,0.08);backdrop-filter:blur(10px)}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 0;border:none;background:none;cursor:pointer;font-size:10px;color:var(--sub)}
+.nav-item.active{color:var(--blue)}.nav-icon{font-size:20px}
+.card{background:var(--card);border-radius:16px;padding:24px;margin-bottom:16px;border:1px solid var(--border)}
+.card-blue{background:linear-gradient(135deg,#1a5cc8,#3182f6);border:none;color:white;border-radius:18px;padding:28px 24px}
+.card-amount{font-size:36px;font-weight:800;margin:10px 0 4px}.card-label{font-size:13px;opacity:0.8}
+.actions{display:flex;gap:10px;margin:16px 0}
+.act-btn{flex:1;padding:18px 8px;border-radius:14px;border:none;cursor:pointer;font-size:13px;font-weight:700;text-align:center;background:var(--card);color:var(--text);border:1px solid var(--border);display:flex;flex-direction:column;align-items:center;gap:8px}
+.act-btn:active{opacity:0.8}.act-btn.primary{background:var(--blue);color:white;border:none}
+.act-btn.complete{opacity:0.35}
+.quiz-container{text-align:center}.quiz-progress{font-size:13px;color:var(--sub);margin-bottom:10px}
+.quiz-bar{height:5px;background:var(--border);border-radius:3px;margin-bottom:24px;overflow:hidden}
+.quiz-bar-fill{height:100%;background:var(--blue);border-radius:3px;transition:width 0.3s}
+.quiz-question{font-size:19px;font-weight:700;line-height:1.7;margin-bottom:28px;padding:0 4px}
+.ox-buttons{display:flex;gap:14px;margin-top:28px}
+.ox-btn{flex:1;padding:44px 0;border-radius:14px;border:2px solid var(--border);font-size:22px;cursor:pointer;background:var(--card);color:var(--text);transition:all 0.15s;font-weight:800}
+.ox-btn:active{border-color:var(--blue)}
+.ox-btn.correct{border-color:var(--green);background:#e8f5e9}
+.ox-btn.wrong{border-color:var(--red);background:#ffebee}
+.quiz-feedback{margin-top:16px;font-size:13px;line-height:1.7;padding:14px;background:var(--card);border-radius:10px;display:none}
+.ad-slot{background:var(--card);border:1px dashed var(--border);border-radius:10px;padding:14px;text-align:center;margin:16px 0;font-size:11px;color:var(--sub)}
+.penalty-container{text-align:center;padding:30px 10px}
+.goal-frame{width:240px;height:160px;border:3px solid var(--border);border-radius:10px;margin:16px auto;position:relative;background:var(--card);overflow:hidden}
+.goal-net{position:absolute;inset:4px;border-radius:6px}
+.goal-net-inner{width:100%;height:100%;background:repeating-linear-gradient(0deg,transparent,transparent 10px,#c0c8d4 10px,#c0c8d4 11px),repeating-linear-gradient(90deg,transparent,transparent 10px,#c0c8d4 10px,#c0c8d4 11px);border-radius:5px}
+.goal-zones{position:absolute;inset:4px;display:flex;z-index:4}
+.goal-zone{flex:1;border:1px dashed rgba(0,0,0,0.1);display:flex;align-items:center;justify-content:center;font-size:11px;color:rgba(0,0,0,0.25);font-weight:600}
+.goal-keeper{position:absolute;width:40px;height:50px;background:var(--red);border-radius:6px 6px 3px 3px;z-index:3;transition:left 0.25s;display:flex;align-items:center;justify-content:center;font-size:18px;bottom:50%;transform:translateY(50%)}
+.ball{position:absolute;width:22px;height:22px;border-radius:50%;background:white;border:2px solid #555;z-index:5;transition:all 0.5s cubic-bezier(0.25,0.46,0.45,0.94)}
+.kick-btn{padding:12px 24px;border-radius:14px;background:var(--blue);color:white;border:none;font-size:15px;font-weight:800;cursor:pointer;margin-top:16px}
+.kick-btn:active{opacity:0.85}.kick-btn:disabled{opacity:0.3;cursor:default}
+.box-container{text-align:center}.box-icon{font-size:80px;margin:20px 0}
+.result-screen{text-align:center;padding:30px 16px}.result-check{font-size:64px}
+.result-score{font-size:26px;font-weight:800;margin:14px 0 6px}.result-p{font-size:14px;color:var(--sub);margin:4px 0}
+.result-list{text-align:left;margin-top:16px}
+.result-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px}
+.match-card{background:var(--card);border-radius:14px;padding:16px;margin-bottom:10px;display:flex;align-items:center;gap:12px;border:1px solid var(--border)}
+.team-badge{min-width:52px;text-align:center}
+.team-badge-color{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:white;margin:0 auto}
+.team-abbr{font-size:9px;color:var(--sub);margin-top:3px}
+.match-info{flex:1}.match-teams{font-size:13px;font-weight:600}.match-time{font-size:10px;color:var(--sub);margin-top:3px}
+.match-score{font-size:18px;font-weight:800;margin:0 8px}
+.match-status{font-size:10px;padding:2px 8px;border-radius:8px;background:var(--border)}
+.match-finished{background:#e8f5e9;color:var(--green)}.match-live{background:#ffebee;color:var(--red)}
+.cheer-btn{padding:6px 12px;border-radius:20px;border:1px solid var(--border);background:var(--card);color:var(--text);font-size:10px;cursor:pointer;margin-left:4px}
+.prize-card{text-align:center}.prize-icon{font-size:64px;margin:16px 0}
+.btn{display:block;width:100%;padding:16px;border-radius:14px;border:none;background:var(--blue);color:white;font-size:15px;font-weight:700;cursor:pointer;margin-top:16px}
+.btn:active{opacity:0.85}.btn:disabled{opacity:0.3;cursor:default}
+.btn-sm{padding:10px 16px;font-size:12px;margin-top:0;display:inline-block;width:auto}
+.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:rgba(26,29,39,0.9);color:#fff;padding:10px 20px;border-radius:8px;font-size:13px;z-index:99;display:none;white-space:nowrap;backdrop-filter:blur(8px)}
+.prize-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}
+.prize-item{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 8px;text-align:center}
+.prize-item .icon{font-size:30px}.prize-item .name{font-size:11px;margin-top:5px;font-weight:600}
+.prize-item .prob{font-size:9px;color:var(--sub);margin-top:2px;display:none}
+.fade-in{animation:fadeIn 0.35s}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.invite-section{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;margin-top:16px;text-align:center}
+
+/* Box open animation */
+.box-flip{perspective:600px;margin:16px auto;width:120px;height:120px}
+.box-flip-inner{position:relative;width:100%;height:100%;transition:transform 0.6s;transform-style:preserve-3d;cursor:pointer}
+.box-flip.open .box-flip-inner{transform:rotateY(180deg)}
+.box-front,.box-back{position:absolute;inset:0;backface-visibility:hidden;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:56px}
+.box-front{background:var(--card);border:2px solid var(--border)}
+.box-back{transform:rotateY(180deg)}
+.box-back.tier1{background:linear-gradient(135deg,#4a4a4a,#666)} /* 응원권 - 회색 */
+.box-back.tier2{background:linear-gradient(135deg,#2563eb,#3182f6)} /* 스트릭복구 - 파랑 */
+.box-back.tier3{background:linear-gradient(135deg,#7c3aed,#8b5cf6)} /* 부스터 - 보라 */
+.box-back.tier4{background:linear-gradient(135deg,#d97706,#f59e0b)} /* 무효권 - 주황 */
+.box-back.tier5{background:linear-gradient(135deg,#dc2626,#ef4444)} /* 추가문제 - 빨강 */
+.box-back.tier6{background:linear-gradient(135deg,#047857,#10b981)} /* 500P - 초록 */
+.box-back.tier7{background:linear-gradient(135deg,#b8860b,#ffd700);box-shadow:0 0 30px rgba(255,215,0,0.5);animation:shimmer 1.5s infinite} /* Toss혜택 - 금 */
+
+/* Custom modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:100;display:none;align-items:center;justify-content:center}
+.modal{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:28px 24px;width:320px;max-width:90vw;text-align:center}
+.modal h3{font-size:18px;margin-bottom:8px}.modal p{font-size:13px;color:var(--sub);margin-bottom:16px;line-height:1.6}
+.modal-btn{padding:10px 24px;border-radius:10px;border:none;cursor:pointer;font-size:13px;font-weight:700;margin:0 4px}
+.modal-btn-primary{background:var(--blue);color:#fff}.modal-btn-secondary{background:var(--border);color:var(--text)}
+
+/* Confetti burst */
+@keyframes burst{0%{transform:scale(0);opacity:1}100%{transform:scale(3);opacity:0}}
+@keyframes shimmer{0%,100%{background-position:-200%}50%{background-position:200%}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.6}}
+.shimmer{background:linear-gradient(90deg,transparent,rgba(255,255,255,0.4),transparent);background-size:200% 100%;animation:shimmer 1.5s infinite}
+.rare-glow{animation:pulse 1s infinite}
+.inventory{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.inv-item{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:6px 10px;font-size:10px;display:flex;align-items:center;gap:4px;color:var(--text)}
+.inv-item .qty{color:var(--gold);font-weight:800}
+.fan-badge{display:inline-block;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:600;margin:4px}
+.fan-badge.selected{border:2px solid var(--blue);background:rgba(49,130,246,0.2)}
+</style>
+</head>
+<body>
+<div class="app">
+<div id="homeTab" class="page active">
+<div class="header"><h1>⚽<span>KICK</span>_QUIZ</h1><div class="header-sub" id="headerStreak">🔥 0일</div></div>
+<div class="card card-blue">
+<div class="card-label" id="greeting">안녕하세요!</div>
+<div class="card-amount" id="totalP">0 P</div>
+<div class="card-label" id="levelLabel">입문자</div>
+</div>
+<div class="actions">
+<button class="act-btn" id="actQuiz" onclick="startQuiz()"><span class="act-icon">📝</span><span>오늘의 퀴즈</span></button>
+<button class="act-btn" id="actPenalty" onclick="startPenalty()"><span class="act-icon">🥅</span><span>승부차기</span></button>
+<button class="act-btn primary" id="actBox" onclick="openSnackBox()"><span class="act-icon">🎁</span><span>일일 보상</span><span style="font-size:10px;opacity:0.7">400P</span></button>
+</div>
+<div class="card" id="resultsCard" style="display:none"><div style="font-size:14px;font-weight:600;margin-bottom:8px">오늘 기록</div><div id="todayResult"></div></div>
+<div class="card" style="padding:20px" id="inventoryCard">
+<div style="font-size:13px;font-weight:600;margin-bottom:6px">🎒 보유 아이템</div>
+<div class="inventory" id="inventoryList"></div>
+</div>
+<div class="card" style="padding:20px">
+<div style="display:flex;justify-content:space-between;margin-bottom:8px"><span style="font-size:12px;color:var(--sub)">정답률</span><span style="font-size:12px;font-weight:700" id="accuracyInfo">-- / 0%</span></div>
+<div style="display:flex;justify-content:space-between"><span style="font-size:12px;color:var(--sub)">최고 연속</span><span style="font-size:12px;font-weight:700" id="bestStreakInfo">0일</span></div>
+</div>
+</div>
+<div id="cheerTab" class="page">
+<div class="header"><h1>⚽<span>KICK</span>_QUIZ</h1><div class="header-sub">📅 매치</div></div>
+<div id="fanTeamSection"></div>
+<div id="matchesList"></div>
+</div>
+<div id="snackTab" class="page">
+<div class="header"><h1>⚽<span>KICK</span>_QUIZ</h1><div id="PDisplay" class="header-sub"></div></div>
+<div class="prize-grid" id="prizeGrid"></div>
+<div class="card prize-card">
+  <div class="box-flip" id="boxFlip" onclick="doOpenBox()">
+    <div class="box-flip-inner">
+      <div class="box-front" id="boxFront">🎁</div>
+      <div class="box-back" id="boxBack">🎟️</div>
+    </div>
+  </div>
+  <p style="font-size:12px;color:var(--sub)">400P 사용 — 하루 1회</p>
+  <button class="btn" id="openBoxBtn" onclick="doOpenBox()">일일 보상 받기</button>
+</div>
+<div class="card" id="inventoryBoxCard" style="display:none">
+  <div style="font-size:14px;font-weight:600;margin-bottom:10px">🎒 아이템 사용</div>
+  <div class="inventory" id="inventoryBoxList"></div>
+</div>
+<div class="card"><div style="font-size:14px;font-weight:600;margin-bottom:10px">📋 보상 내역</div><div id="couponList"></div></div>
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal" id="modalContent">
+    <h3 id="modalTitle">알림</h3>
+    <p id="modalBody">내용</p>
+    <div>
+      <button class="modal-btn modal-btn-secondary" onclick="closeModal(false)">취소</button>
+      <button class="modal-btn modal-btn-primary" id="modalConfirm" onclick="closeModal(true)">확인</button>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+<nav class="bottom-nav">
+<button class="nav-item active" id="nav-home" onclick="switchTab('home')"><span class="nav-icon">🏠</span><span>홈</span></button>
+<button class="nav-item" id="nav-cheer" onclick="switchTab('cheer')"><span class="nav-icon">📅</span><span>응원</span></button>
+<button class="nav-item" id="nav-snack" onclick="switchTab('snack')"><span class="nav-icon">🎁</span><span>보상</span></button>
+</nav>
+<div class="toast" id="toast"></div>
+
+<script>
+// ====== Questions ======
+var QUIZ = [
+  {q:'2002 한일 월드컵에서 한국이 4강에 진출했다',a:true,e:'2002년 6월 25일 서울 4강전, 독일에게 0-1 패배',d:'easy'},
+  {q:'2010 남아공 월드컵 우승국은 스페인이다',a:true,e:'스페인이 연장전 끝에 네덜란드 1-0 격파',d:'easy'},
+  {q:'월드컵 최다 우승국은 브라질이다',a:true,e:'브라질 5회(1958·62·70·94·2002) 우승',d:'easy'},
+  {q:'2014 브라질 월드컵 결승은 독일 vs 아르헨티나였다',a:true,e:'괴체 결승골로 독일 1-0 우승',d:'easy'},
+  {q:'2018 러시아 월드컵 우승국은 프랑스다',a:true,e:'크로아티아를 4-2로 꺾고 2번째 우승',d:'easy'},
+  {q:'1998 프랑스 월드컵 우승국은 브라질이다',a:false,e:'개최국 프랑스가 브라질 3-0 격파',d:'easy'},
+  {q:'한국은 1954년 월드컵에 처음 진출했다',a:true,e:'1954 스위스 월드컵이 첫 진출',d:'easy'},
+  {q:'EPL 최다 우승팀은 맨체스터 유나이티드다',a:true,e:'맨유 20회(EPL 13회 + 구 1부 7회)',d:'easy'},
+  {q:'토트넘은 EPL 우승 경험이 있다',a:false,e:'마지막 리그 우승 1961년. EPL 아직',d:'easy'},
+  {q:'레알 마드리드는 UCL 최다 우승팀이다',a:true,e:'UCL 15회 우승',d:'easy'},
+  {q:'EPL 역대 최다 득점자는 앨런 시어러다',a:true,e:'시어러 260골',d:'easy'},
+  {q:'2026 월드컵은 미국·캐나다·멕시코 공동 개최다',a:true,e:'월드컵 사상 최초 3개국 공동 개최',d:'easy'},
+  {q:'발롱도르 최다 수상자는 메시다',a:true,e:'메시 8회 수상',d:'hard'},
+  {q:'2022 카타르 월드컵 우승국은 아르헨티나다',a:true,e:'프랑스를 승부차기 4-2로 격파',d:'hard'},
+  {q:'2002 월드컵에서 한국이 이탈리아를 꺾었다',a:true,e:'안정환 연장 골든골 2-1 승리',d:'hard'},
+  {q:'2023-24 EPL 우승팀은 맨체스터 시티다',a:true,e:'맨시티 4연속 우승 — EPL 최초',d:'hard'},
+  {q:'한국 A매치 최다 출전 선수는 차범근이다',a:false,e:'이영표 127경기. 차범근 136경기로 최다 골',d:'hard'},
+  {q:'손흥민은 EPL에서 30골 이상 넣은 시즌이 있다',a:false,e:'최다 23골(21-22)',d:'hard'},
+  {q:'손흥민은 아시아 선수 최초 EPL 득점왕이다',a:true,e:'2021-22 23골 득점왕',d:'hard'},
+  {q:'박지성은 맨유에서 EPL 5회 우승했다',a:false,e:'4회(2007·08·11·13)',d:'hard'},
+  {q:'펠레는 월드컵을 3회 우승했다',a:true,e:'1958·62·70',d:'hard'},
+  {q:'마라도나는 월드컵 우승 2회다',a:false,e:'1986년 1회. 1990년 준우승',d:'hard'},
+  {q:'호나우두는 월드컵 결승 2골을 넣은 적 있다',a:true,e:'2002 결승 독일전 2골',d:'hard'},
+  {q:'EPL 40골 이상 시즌이 있었다',a:false,e:'38R 기준 최다 34골',d:'hard'},
+];var QUIZ_DAILY=4;
+
+// ====== Default matches ======
+var DEFAULT_MATCHES=[
+  {t1:'맨시티',c1:'#6cabdd',t2:'아스널',c2:'#ef0107',score:'2-1',st:'종료',dt:'03-15'},
+  {t1:'리버풀',c1:'#c8102e',t2:'맨유',c2:'#da291c',score:'3-0',st:'종료',dt:'03-16'},
+  {t1:'토트넘',c1:'#132257',t2:'첼시',c2:'#034694',score:'-',st:'예정',dt:'03-22'},
+  {t1:'레알',c1:'#febe10',t2:'바르사',c2:'#a50044',score:'-',st:'예정',dt:'03-23'},
+  {t1:'뮌헨',c1:'#dc052d',t2:'도르트문트',c2:'#fde100',score:'-',st:'예정',dt:'03-29'},
+];
+
+// ====== State ======
+var STORE='kq_data';var MATCH_KEY='kq_matches';var FAN_KEY='kq_fanTeam';
+function loadState(){try{var r=localStorage.getItem(STORE);return r?JSON.parse(r):null}catch(e){return null}}
+function saveState(s){try{localStorage.setItem(STORE,JSON.stringify(s))}catch(e){}}
+function defaultState(){return{point:0,streak:0,bestStreak:0,lastDate:null,totalCorrect:0,totalWrong:0,quizDone:false,penaltyDone:false,boxDone:false,todayCorrect:0,todayWrong:0,coupons:[],items:{cheerTicket:0,streakRecovery:0,booster2x:0,nullifier:0,extraProblem:0},boosterActive:false,nullifierActive:false,extraActive:false,cheerBoost:false}}
+function getState(){var s=loadState()||defaultState();var t=todayStr();if(s.lastDate!==t){s.quizDone=false;s.penaltyDone=false;s.boxDone=false;s.todayCorrect=0;s.todayWrong=0;s.lastDate=t;s.boosterActive=false;s.nullifierActive=false;s.extraActive=false;s.cheerBoost=false}if(!s.items)s.items={cheerTicket:0,streakRecovery:0,booster2x:0,nullifier:0,extraProblem:0};return s}
+function persistState(upd){var s=getState();for(var k in upd)s[k]=upd[k];s.lastDate=todayStr();saveState(s);return s}
+function todayStr(){var d=new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate()}
+
+function getMatches(){try{var r=localStorage.getItem(MATCH_KEY);if(r){var m=JSON.parse(r);if(m.length)return m}}catch(e){}return DEFAULT_MATCHES}
+function getFanTeam(){try{return localStorage.getItem(FAN_KEY)||null}catch(e){return null}}
+
+function getDailyQuiz(){var d=new Date(),seed=d.getFullYear()*10000+(d.getMonth()+1)*100+d.getDate();var easy=QUIZ.filter(function(q){return q.d==='easy'});var hard=QUIZ.filter(function(q){return q.d==='hard'});var pick=function(arr,n){var r=[];for(var i=0;i<n;i++)r.push(arr[(seed+i*7)%arr.length]);return r};return pick(easy,2).concat(pick(hard,2))}
+
+// ====== Tab ======
+function switchTab(t){
+  document.getElementById('homeTab').className='page'+(t==='home'?' active':'');
+  document.getElementById('cheerTab').className='page'+(t==='cheer'?' active':'');
+  document.getElementById('snackTab').className='page'+(t==='snack'?' active':'');
+  document.getElementById('nav-home').className='nav-item'+(t==='home'?' active':'');
+  document.getElementById('nav-cheer').className='nav-item'+(t==='cheer'?' active':'');
+  document.getElementById('nav-snack').className='nav-item'+(t==='snack'?' active':'');
+  if(t==='cheer')renderCheer();if(t==='snack')renderSnack();
+}
+
+// ====== Home ======
+function updateHome(){
+  var s=getState();
+  document.getElementById('totalP').textContent=s.point+' P';
+  document.getElementById('headerStreak').textContent='🔥 '+s.streak+'일';
+  var lv='입문자';if(s.point>=1000)lv='아마추어';if(s.point>=5000)lv='프로';if(s.point>=20000)lv='레전드';
+  document.getElementById('levelLabel').textContent=lv;
+  var tc=s.totalCorrect||0,tw=s.totalWrong||0,tt=tc+tw;
+  document.getElementById('accuracyInfo').textContent=tc+'/'+(tt||0)+' ('+(tt?Math.round(tc/tt*100):0)+'%)';
+  document.getElementById('bestStreakInfo').textContent=s.bestStreak+'일';
+  document.getElementById('actQuiz').className='act-btn'+(s.quizDone?' complete':'');
+  document.getElementById('actPenalty').className='act-btn'+(s.penaltyDone?' complete':'');
+  document.getElementById('actBox').className='act-btn primary'+(s.boxDone?' complete':'');
+  var actEl=document.getElementById('actQuiz');
+  if(s.boosterActive)actEl.innerHTML='<span class="act-icon">⚡</span><span>부스터 ON</span>';
+  else actEl.innerHTML='<span class="act-icon">📝</span><span>오늘의 퀴즈</span>';
+  if(s.nullifierActive)document.getElementById('actQuiz').innerHTML+='<span style="font-size:9px;color:var(--gold)"> 🛡️무효</span>';
+  if(s.quizDone){document.getElementById('resultsCard').style.display='block';document.getElementById('todayResult').innerHTML='<span style="font-size:13px">✅ '+s.todayCorrect+'/'+QUIZ_DAILY+' | +'+s._lastQuizReward+'P</span>'+((s.extraActive||s.boosterActive)?'<br><span style="font-size:10px;color:var(--gold)">⚡추가 보너스 활성화</span>':'')}
+  else{document.getElementById('resultsCard').style.display='none'}
+  renderInventory();
+}
+function renderInventory(){
+  var s=getState(),i=s.items||{};
+  var list=document.getElementById('inventoryList');
+  var items=[];
+  if(i.cheerTicket)items.push({l:'🎟️응원권',v:i.cheerTicket});
+  if(i.streakRecovery)items.push({l:'💊출석복구',v:i.streakRecovery});
+  if(i.booster2x||s.boosterActive)items.push({l:'⚡2X부스터'+(s.boosterActive?'':' '),v:i.booster2x||(s.boosterActive?'ON':0)});
+  if(i.nullifier)items.push({l:'🛡️오답무효',v:i.nullifier});
+  if(i.extraProblem)items.push({l:'🔥추가문제',v:i.extraProblem});
+  list.innerHTML=items.length?items.map(function(it){return '<span class="inv-item">'+it.l+' <span class="qty">x'+it.v+'</span></span>';}).join(''):'<span style="font-size:11px;color:var(--sub)">보유 아이템 없음 — 보상에서 획득</span>';
+  if(s.boosterActive||s.nullifierActive||s.extraActive||s.cheerBoost){
+    var actEl=document.createElement('div');
+    actEl.style.cssText='font-size:10px;color:var(--gold);margin-top:6px';
+    actEl.innerHTML='활성: '+(s.boosterActive?'⚡부스터 ':'')+(s.nullifierActive?'🛡️무효 ':'')+(s.extraActive?'🔥추가 ':'')+(s.cheerBoost?'🎟️응원3배 ':'');
+    list.appendChild(actEl);
+  }
+}
+
+// ====== Quiz ======
+var quizQ=null,quizIdx=0,quizA=[],boosterActive=false;
+function startQuiz(){
+  var s=getState();if(s.quizDone&&!(s.items&&s.items.extraProblem)){showToast('오늘 퀴즈 완료!');return;}
+  quizQ=getDailyQuiz();quizIdx=0;quizA=[];
+  var hasExtra=s.items&&s.items.extraProblem&&s.quizDone;
+  if(hasExtra){quizQ=quizQ.concat([QUIZ[(new Date()).getDate()%QUIZ.length]]);persistState({items:{...s.items,extraProblem:s.items.extraProblem-1}});}
+  boosterActive=s.boosterActive||(!s.quizDone&&s.items&&s.items.booster2x&&s.items.booster2x>0);
+  if(boosterActive){persistState({boosterActive:true});if(s.items.booster2x>0)persistState({items:{...s.items,booster2x:s.items.booster2x-1}});}
+  if(s.nullifierActive)persistState({nullifierActive:false});
+  var main=document.getElementById('homeTab');
+  main.innerHTML='<div class="card" style="border:none;background:transparent;padding:0"><div class="quiz-container fade-in">'
+    +(boosterActive?'<div style="font-size:11px;color:var(--gold);margin-bottom:6px">⚡ 2X 부스터 활성화!</div>':'')
+    +'<div class="quiz-progress" id="qProg"></div><div class="quiz-bar"><div class="quiz-bar-fill" id="qBar" style="width:0%"></div></div>'
+    +'<div class="quiz-question" id="qText"></div>'
+    +'<div class="ox-buttons"><button class="ox-btn" id="btnO" onclick="answerQ(true)">O</button><button class="ox-btn" id="btnX" onclick="answerQ(false)">X</button></div>'
+    +'<div class="quiz-feedback" id="qFeed"></div></div></div>';
+  showQ();
+}
+function showQ(){
+  if(quizIdx>=quizQ.length){finishQuiz();return;}
+  document.getElementById('qProg').textContent=(quizIdx+1)+'/'+quizQ.length+' '+(quizQ[quizIdx].d==='hard'?'🔥고급':'초급');
+  document.getElementById('qBar').style.width=((quizIdx)/quizQ.length*100)+'%';
+  document.getElementById('qText').textContent=quizQ[quizIdx].q;
+  document.getElementById('qFeed').style.display='none';document.getElementById('qFeed').className='quiz-feedback';
+  document.getElementById('btnO').disabled=false;document.getElementById('btnX').disabled=false;
+  document.getElementById('btnO').className='ox-btn';document.getElementById('btnX').className='ox-btn';
+  if(quizIdx===2){var ad=document.createElement('div');ad.className='ad-slot fade-in';ad.id='adSlot';ad.innerHTML='📢 광고 슬롯 — 🔥고급 문제 시작 전<br><span style="font-size:9px">Toss 광고 또는 브랜드 배너</span>';document.querySelector('.quiz-container').insertBefore(ad,document.getElementById('qProg').nextSibling);}
+  else{var as=document.getElementById('adSlot');if(as)as.remove();}
+}
+function answerQ(ans){
+  var q=quizQ[quizIdx];var correct=q.a===ans;
+  var s=getState();var useNullifier=false;
+  if(!correct&&((s.items&&s.items.nullifier&&s.items.nullifier>0)||s.nullifierActive)){
+    useNullifier=true;correct=true;
+    if(s.nullifierActive)persistState({nullifierActive:false});
+    else persistState({items:{...s.items,nullifier:s.items.nullifier-1}});
+  }
+  document.getElementById('btnO').disabled=true;document.getElementById('btnX').disabled=true;
+  if(ans){document.getElementById('btnO').className='ox-btn '+(correct?'correct':'wrong')}else{document.getElementById('btnX').className='ox-btn '+(correct?'correct':'wrong')}
+  var feed=document.getElementById('qFeed');
+  var base=q.d==='hard'?(correct?100:20):(correct?50:20);
+  var reward=boosterActive&&correct?base*2:base;
+  feed.style.display='block';
+  feed.innerHTML=(correct?(useNullifier?'🛡️ 무효권 사용! 정답 처리!':'✅ 정답!'):'❌ 오답!')+'<br><span style="font-size:12px;color:var(--sub)">'+q.e+'</span><br><span style="color:var(--green)">+'+reward+'P</span>';
+  quizA.push({correct:correct,q:q,reward:reward});
+  quizIdx++;setTimeout(showQ,1500);
+}
+function finishQuiz(){
+  var s=getState();var correct=0,reward=0;
+  quizA.forEach(function(a){if(a.correct)correct++;reward+=a.reward;});
+  var ns=persistState({point:s.point+reward,streak:s.quizDone?s.streak:s.streak+1,quizDone:true,todayCorrect:correct,todayWrong:quizQ.length-correct,totalCorrect:(s.totalCorrect||0)+correct,totalWrong:(s.totalWrong||0)+(quizQ.length-correct),_lastQuizReward:reward});
+  if(!s.quizDone&&ns.streak>ns.bestStreak)persistState({bestStreak:ns.streak});
+  var main=document.getElementById('homeTab');
+  main.innerHTML='<div class="result-screen fade-in"><div class="result-check">'+(reward>=200?'🏆':'📝')+'</div>'
+    +'<div class="result-score">'+correct+'/'+quizQ.length+'</div><div class="result-p">+'+reward+' P</div>'
+    +'<div class="result-p" style="color:var(--green)">🔥 '+ns.streak+'일 연속</div>'
+    +'<div class="result-list">'+quizA.map(function(a,i){return '<div class="result-item">'+(a.correct?'✅':'❌')+' <span>'+(a.q.d==='hard'?'🔥':'')+(a.q.q.length>26?a.q.q.slice(0,26)+'...':a.q.q)+'</span><span style="margin-left:auto;color:var(--green);font-size:11px">+'+a.reward+'P</span></div>';}).join('')
+    +'</div><button class="btn" onclick="location.reload()" style="margin-top:20px">홈으로</button></div>';
+}
+
+// ====== Penalty ======
+var Pstate={kicked:false};
+function startPenalty(){
+  var s=getState();if(s.penaltyDone){showToast('오늘 승부차기 완료!');return;}
+  Pstate={kicked:false};
+  document.getElementById('homeTab').innerHTML='<div class="penalty-container fade-in"><h2 style="font-size:20px;margin-bottom:4px">🥅 승부차기</h2>'
+    +'<p style="font-size:12px;color:var(--sub)">좌/중/우 선택 → 골키퍼 반대 방향으로 성공</p><p style="font-size:11px;color:var(--sub);margin-bottom:4px">성공 +80P / 실패 +10P</p>'
+    +'<div class="goal-frame" id="goalFrame"><div class="goal-net"><div class="goal-net-inner"></div></div>'
+    +'<div class="goal-zones" id="goalZones"><div class="goal-zone" id="zoneLeft">← 좌</div><div class="goal-zone" id="zoneCenter">중앙</div><div class="goal-zone" id="zoneRight">우 →</div></div>'
+    +'<div class="goal-keeper" id="keeper" style="left:50%;transform:translateX(-50%) translateY(50%)">🧤</div>'
+    +'<div class="ball" id="ball" style="bottom:10px;left:50%;transform:translateX(-50%)"></div></div>'
+    +'<div style="display:flex;gap:8px;margin-top:16px;justify-content:center">'
+    +'<button class="kick-btn" style="background:#f97316" onclick="doKick(0)">← 왼쪽</button>'
+    +'<button class="kick-btn" onclick="doKick(1)">중앙</button>'
+    +'<button class="kick-btn" style="background:#f97316" onclick="doKick(2)">오른쪽 →</button></div>'
+    +'<div id="kickResult" style="margin-top:16px;font-size:18px;font-weight:700"></div></div>';
+}
+function doKick(zone){
+  if(Pstate.kicked)return;Pstate.kicked=true;
+  var ball=document.getElementById('ball');var keeper=document.getElementById('keeper');
+  var pos=[{l:'15%'},{l:'50%'},{l:'75%'}];var kChoice=Math.floor(Math.random()*3);
+  var success=zone!==kChoice;
+  keeper.style.left=pos[kChoice].l;keeper.style.transform='translateX(-50%) translateY(50%)';
+  ball.style.left=pos[zone].l;ball.style.bottom='40%';
+  document.getElementById('kickResult').innerHTML='<span style="color:'+(success?'var(--green)':'var(--red)')+'">'+(success?'✅ 골! +80P':'❌ 선방! +10P')+'</span>';
+  document.querySelectorAll('.kick-btn').forEach(function(b){b.disabled=true;});
+  setTimeout(function(){
+    var s=getState();var r=success?80:10;
+    persistState({point:s.point+r,penaltyDone:true});
+    showToast(success?'🎉 골! +80P':'😅 선방! +10P');
+    setTimeout(function(){location.reload();},1000);
+  },1200);
+}
+
+// ====== Box v2 ======
+var BOX_COST=400;
+var PRIZES=[
+  {icon:'🎟️',n:'응원권+80P',prob:50,won:80,item:'cheerTicket'},
+  {icon:'💊',n:'출석복구권',prob:20,won:0,item:'streakRecovery'},
+  {icon:'⚡',n:'2X 부스터',prob:15,won:0,item:'booster2x'},
+  {icon:'🛡️',n:'오답무효권',prob:10,won:0,item:'nullifier'},
+  {icon:'🔥',n:'추가문제권',prob:3,won:0,item:'extraProblem'},
+  {icon:'💰',n:'400P 페이백',prob:1.7,won:400},
+  {icon:'🎫',n:'Toss 혜택(출시후)',prob:0.3,won:0},
+];
+function renderSnack(){
+  document.getElementById('PDisplay').textContent=getState().point+'P';
+  document.getElementById('prizeGrid').innerHTML=PRIZES.map(function(p){return '<div class="prize-item"><div class="icon">'+p.icon+'</div><div class="name">'+p.n+'</div><div class="prob">'+p.prob+'%</div></div>';}).join('');
+  var s=getState();
+  var flip=document.getElementById('boxFlip');
+  var bf=document.getElementById('boxFront');bf.style.display='flex';
+  var bb=document.getElementById('boxBack');
+  if(s.boxDone&&s.coupons.length){
+    var last=s.coupons[s.coupons.length-1];
+    var lIdx=7;PRIZES.forEach(function(p,i){if(p.n===last.n)lIdx=i+1;});
+    bb.className='box-back tier'+lIdx;
+    bb.textContent=last.icon;
+    flip.classList.add('open');
+  }else{
+    flip.classList.remove('open');
+    bb.className='box-back';
+    bb.textContent='🎁';
+  }
+  var btn=document.getElementById('openBoxBtn');
+  btn.disabled=s.boxDone||s.point<BOX_COST;
+  btn.textContent=s.boxDone?'오늘 보상 수령 완료':(s.point<BOX_COST?'P 부족 ('+s.point+'/'+BOX_COST+')':'일일 보상 받기');
+  var ic=document.getElementById('inventoryBoxCard');
+  var hasItems=s.items.cheerTicket||s.items.streakRecovery||s.items.booster2x||s.items.nullifier||s.items.extraProblem;
+  ic.style.display=hasItems?'block':'none';
+  if(hasItems){
+    var items=[
+      {icon:'🎟️',n:'응원권',key:'cheerTicket',qty:s.items.cheerTicket,action:'useItem(\'cheerTicket\')'},
+      {icon:'💊',n:'출석복구권',key:'streakRecovery',qty:s.items.streakRecovery,action:'useItem(\'streakRecovery\')'},
+      {icon:'⚡',n:'2X 부스터',key:'booster2x',qty:s.items.booster2x,action:'useItem(\'booster2x\')'},
+      {icon:'🛡️',n:'오답무효권',key:'nullifier',qty:s.items.nullifier,action:'useItem(\'nullifier\')'},
+      {icon:'🔥',n:'추가문제권',key:'extraProblem',qty:s.items.extraProblem,action:'useItem(\'extraProblem\')'},
+    ];
+    document.getElementById('inventoryBoxList').innerHTML=items.filter(function(i){return i.qty>0;}).map(function(i){
+      return '<div class="inv-item" style="cursor:pointer" onclick="'+i.action+'">'+i.icon+' '+i.n+' <span class="qty">x'+i.qty+'</span> <span style="font-size:9px;color:var(--sub);margin-left:4px">사용</span></div>';
+    }).join('');
+  }
+  var cl=document.getElementById('couponList');
+  if(!s.coupons.length){cl.innerHTML='<span style="font-size:12px;color:var(--sub)">보상 내역 없음</span>';return;}
+  cl.innerHTML=s.coupons.map(function(c){return '<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);font-size:12px">'+c.icon+' '+c.n+'<span style="color:var(--green)">+'+(c.won||'아이템')+'</span><span style="color:var(--sub);margin-left:auto;font-size:10px">'+(c.date||'')+'</span></div>';}).join('');
+}
+function openSnackBox(){switchTab('snack');renderSnack();}
+function doOpenBox(){
+  var s=getState();if(s.boxDone){showToast('오늘 보상 수령 완료');return;}if(s.point<BOX_COST){showToast('P 부족');return;}
+  var r=Math.random()*100,cum=0,win=null;
+  for(var i=0;i<PRIZES.length;i++){cum+=PRIZES[i].prob;if(r<cum){win=PRIZES[i];break}}if(!win)win=PRIZES[0];
+  var idx=PRIZES.indexOf(win)+1;
+  var items={...s.items};var reward=win.won||0;var logReward=win.won?'+'+win.won+'P':'아이템';
+  if(win.item==='cheerTicket')items.cheerTicket=(items.cheerTicket||0)+1;
+  else if(win.item==='streakRecovery')items.streakRecovery=(items.streakRecovery||0)+1;
+  else if(win.item==='booster2x')items.booster2x=(items.booster2x||0)+1;
+  else if(win.item==='nullifier')items.nullifier=(items.nullifier||0)+1;
+  else if(win.item==='extraProblem')items.extraProblem=(items.extraProblem||0)+1;
+  else if(win.n==='Toss 혜택(출시후)'){logReward='🎫 Toss 혜택 — 출시 후 지급';reward=0;}
+  persistState({point:s.point-BOX_COST+reward,boxDone:true,coupons:(s.coupons||[]).concat([{icon:win.icon,n:win.n,won:reward,date:todayStr()}]),items:items});
+  var flip=document.getElementById('boxFlip');
+  var bf=document.getElementById('boxFront');
+  var bb=document.getElementById('boxBack');
+  bf.style.display='flex';
+  bb.className='box-back tier'+idx;
+  bb.textContent=win.icon;
+  flip.classList.add('open');
+  if(idx>=5)showConfetti();
+  showToast('🎉 '+win.n+'!'+(win.won?' +'+win.won+'P':''));
+  setTimeout(function(){renderSnack();},700);
+}
+function showConfetti(){
+  var colors=['#ffd700','#ff6b6b','#3182f6','#00c853','#8b5cf6'];
+  for(var i=0;i<24;i++){
+    var c=document.createElement('div');
+    c.style.cssText='position:fixed;font-size:16px;z-index:98;pointer-events:none;left:'+(Math.random()*80+10)+'%;top:30%;opacity:1;transition:all 1.2s ease-out';
+    c.textContent=['✨','⭐','🌟','💫','🎉'][Math.floor(Math.random()*5)];
+    document.body.appendChild(c);
+    setTimeout(function(el){el.style.top=(Math.random()*30+50)+'%';el.style.left=(Math.random()*80+10)+'%';el.style.opacity='0';}(c),50);
+    setTimeout(function(el){el.remove();}(c),1300);
+  }
+}
+
+// ====== Item usage ======
+function useItem(itemKey){
+  var s=getState();var items={...s.items};
+  if(!items[itemKey]){showToast('아이템 없음');return;}
+  if(itemKey==='cheerTicket'){
+    showModal('🎟️ 응원권 사용','응원 보상이 3배 (5P→15P)가 됩니다. 1회 소모됩니다.',function(){
+      var ns=getState();var nitems={...ns.items,cheerTicket:ns.items.cheerTicket-1};
+      persistState({cheerBoost:true,items:nitems});
+      showToast('🎟️ 응원 부스트 ON! doCheer() 15P');
+      renderSnack();updateHome();
+    });
+    return;
+  }
+  if(itemKey==='streakRecovery'){
+    showModal('💊 스트릭 복구','스트릭이 끊긴 경우에만 사용 가능합니다. 계속하시겠습니까?',function(){
+      var ns=getState();
+      if(ns.streak===0&&ns.lastDate&&ns.lastDate!==todayStr()){
+        var nitems={...ns.items,streakRecovery:ns.items.streakRecovery-1};
+        persistState({streak:1,items:nitems});
+        showToast('🔥 스트릭 복구 완료!');
+        renderSnack();updateHome();
+      }else{showToast('복구가 필요하지 않습니다.');}
+    });
+    return;
+  }
+  if(itemKey==='booster2x'){
+    showModal('⚡ 2X 부스터','다음 퀴즈 정답 보상 2배. 지금 사용하시겠습니까?',function(){
+      var ns=getState();var nitems={...ns.items,booster2x:ns.items.booster2x-1};
+      persistState({boosterActive:true,items:nitems});
+      showToast('⚡ 부스터 활성화! 오늘 정답 2배!');
+      renderSnack();updateHome();
+    });
+    return;
+  }
+  if(itemKey==='nullifier'){
+    showModal('🛡️ 오답무효권','퀴즈 중 오답 1회를 정답 처리합니다. 지금 사용하시겠습니까?',function(){
+      var ns=getState();var nitems={...ns.items,nullifier:ns.items.nullifier-1};
+      persistState({nullifierActive:true,items:nitems});
+      showToast('🛡️ 무효권 활성화! 첫 오답 면제!');
+      renderSnack();updateHome();
+    });
+    return;
+  }
+  if(itemKey==='extraProblem'){
+    showModal('🔥 추가문제권','오늘 퀴즈 1문제가 추가됩니다. 사용하시겠습니까?',function(){
+      var ns=getState();var nitems={...ns.items,extraProblem:ns.items.extraProblem-1};
+      persistState({extraActive:true,items:nitems});
+      showToast('🔥 추가문제 활성화!');
+      renderSnack();updateHome();
+    });
+    return;
+  }
+  showToast('사용 불가 아이템');
+}
+
+// ====== Custom modal ======
+var modalCb=null;
+function showModal(title,body,callback){
+  document.getElementById('modalTitle').textContent=title;
+  document.getElementById('modalBody').textContent=body;
+  modalCb=callback;
+  document.getElementById('modalOverlay').style.display='flex';
+}
+function closeModal(confirmed){
+  document.getElementById('modalOverlay').style.display='none';
+  var cb=modalCb;modalCb=null;
+  if(confirmed&&cb)setTimeout(cb,100);
+}
+
+// ====== Cheer ======
+function renderCheer(){
+  var s=getState();var matches=getMatches();var fan=getFanTeam();
+  var ft=document.getElementById('fanTeamSection');
+  var teams=[];matches.forEach(function(m){if(teams.indexOf(m.t1)<0)teams.push(m.t1);if(teams.indexOf(m.t2)<0)teams.push(m.t2);});
+  ft.innerHTML='<div style="margin-bottom:10px"><div style="font-size:13px;font-weight:600;margin-bottom:6px">🔵 내 응원팀</div>'
+    +teams.map(function(t){return '<span class="fan-badge'+(fan===t?' selected':'')+'" onclick="setFanTeam(\''+t+'\')" style="cursor:pointer">'+(fan===t?'★ ':'')+t+'</span>';}).join('')
+    +'</div>';
+  var predKey='kq_predictions';var preds={};try{preds=JSON.parse(localStorage.getItem(predKey))||{}}catch(e){}
+  var list=document.getElementById('matchesList');
+  list.innerHTML=matches.map(function(m,i){
+    var done=m.st==='종료';var live=m.st==='경기중';
+    var p=preds[i];var predStr=p?' → '+['승','무','패'][p]:'';
+    var showPred=!done&&!live;
+    return '<div class="match-card fade-in">'
+      +'<div class="team-badge"><div class="team-badge-color" style="background:'+m.c1+'">'+m.t1.slice(0,2)+'</div><div class="team-abbr">'+m.t1+'</div></div>'
+      +'<div class="match-info" style="text-align:center"><div class="match-teams">'+(fan===m.t1?'🔵 ':'')+m.t1+(fan===m.t2?' 🔵':'')+' vs '+m.t2+'</div><div class="match-time">'+m.dt+predStr+'</div></div>'
+      +'<div class="team-badge"><div class="team-badge-color" style="background:'+m.c2+'">'+m.t2.slice(0,2)+'</div><div class="team-abbr">'+m.t2+'</div></div>'
+      +'<div style="text-align:center"><div class="match-score">'+(done||live?m.score:'-')+'</div><div class="match-status '+(done?'match-finished':live?'match-live':'')+'">'+m.st+'</div></div>'
+      +(showPred && !p ?'<div style="display:flex;gap:2px"><button class="cheer-btn" onclick="predict('+i+',0)">승</button><button class="cheer-btn" onclick="predict('+i+',1)">무</button><button class="cheer-btn" onclick="predict('+i+',2)">패</button></div>':'<button class="cheer-btn" onclick="doCheer()">응원</button>')
+      +'</div>';
+  }).join('');
+}
+function setFanTeam(t){localStorage.setItem(FAN_KEY,t);renderCheer();showToast('🔵 '+t+' 응원팀 설정 완료!');}
+function doCheer(){
+  var s=getState();var bonus=s.cheerBoost?15:5;
+  if(s.cheerBoost)persistState({cheerBoost:false});
+  persistState({point:s.point+bonus});
+  showToast('⚡ 응원 완료!'+(bonus>5?' 🎟️ +'+bonus+'P':' +5P'));
+  updateHome();
+}
+function predict(idx,val){var k='kq_predictions';var p={};try{p=JSON.parse(localStorage.getItem(k))||{}}catch(e){}p[idx]=val;try{localStorage.setItem(k,JSON.stringify(p))}catch(e){}showToast('📊 예측 등록! 결과 발표 후 정산 예정');renderCheer();}
+
+// ====== Toast ======
+function showToast(m){var t=document.getElementById('toast');t.textContent=m;t.style.display='block';setTimeout(function(){t.style.display='none';},2000);}
+
+// ====== Streak Recovery ======
+(function checkStreakRecovery(){
+  var s=getState();
+  if(s.streak===0&&s.lastDate&&s.lastDate!==todayStr()&&s.items&&s.items.streakRecovery){
+    showModal('💊 스트릭 복구','스트릭이 끊겼습니다. 복구권을 사용하시겠습니까? (보유: '+s.items.streakRecovery+'개)',function(){
+      var ns=getState();
+      persistState({streak:1,items:{...ns.items,streakRecovery:ns.items.streakRecovery-1}});
+      showToast('🔥 스트릭 복구 완료!');
+      updateHome();
+    });
+  }
+})();
+
+// ====== Init ======
+updateHome();
+</script>
+</body>
+</html>
